@@ -1,0 +1,40 @@
+plugins {
+    id 'me.champeau.gradle.jmh' version '0.3.0'
+    id "com.zoltu.kotlin" version "1.0.1"
+}
+
+group 'com.flamurey'
+version '0.1.1'
+
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'groovy'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.1'
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+}
+
+jmh {
+//    include = 'benchmark.Loops'
+
+    fork = 1
+    timeUnit = 'ms' // Output time unit. Available time units are: [m, s, ms, us, ns].
+    failOnError = true
+    jvmArgs = "-ea"
+
+    iterations = 3
+    timeOnIteration = '5s'
+
+    warmupIterations = 3
+    warmup = '5s'
+    warmupMode = 'INDI' //  Warmup modes are: [INDI, BULK, BULK_INDI].
+
+    profilers = ['gc']
+    forceGC = true
+}
