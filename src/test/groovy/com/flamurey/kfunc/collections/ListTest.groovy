@@ -3,6 +3,8 @@ package com.flamurey.kfunc.collections
 import spock.lang.Specification
 
 class ListTest extends Specification {
+    static listUtil = List["Companion"] as List.Companion
+
     def "Drop"() {
         expect:
         list(2, 4).drop(1) == list(4)
@@ -68,7 +70,16 @@ class ListTest extends Specification {
         list(2, 3).appendRight(list(0, 1)) == list(2, 3, 0, 1)
     }
 
+    def "create reversed list"() {
+        expect:
+        reversedList(2, 3) == list(2, 3).reverse()
+    }
+
     static <T> List<T> list(T... data) {
-        return List["Companion"].invoke(data)
+        return listUtil.invoke(data)
+    }
+
+    static <T> List<T> reversedList(T... data) {
+        return listUtil.reverse(data)
     }
 }

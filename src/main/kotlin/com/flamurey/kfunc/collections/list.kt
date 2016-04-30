@@ -1,6 +1,8 @@
 package com.flamurey.kfunc.collections
 
 sealed class List<out T> {
+  var hashCode: Int = 0
+
   object Nil : List<Nothing>()
 
   class Cons<out T>(val head: T, val tail: List<T>) : List<T>()
@@ -87,6 +89,21 @@ sealed class List<out T> {
     return loop(this, other)
   }
 
+  override fun hashCode(): Int {
+    if (hashCode == 0) {
+      fun loop(l: List<T>, result: Int): Int =
+        when (l) {
+          is Cons<T> -> {
+            val headHashCode = l.head?.hashCode() ?: 1
+            loop(l.tail, 31 * result + headHashCode)
+          }
+          else -> result
+        }
+      hashCode = loop(this, 1)
+    }
+    return hashCode
+  }
+
   companion object {
     operator fun <T> invoke(vararg data: T): List<T> {
       tailrec fun loop(acc: List<T>, index: Int): List<T> =
@@ -118,18 +135,3 @@ fun <T> List<T>.appendRight(l: List<T>): List<T> =
 fun <T> List<T>.appendLeft(x: T): List<T> = List.Cons(x, this)
 
 operator fun <T> List<T>.plus(x: T): List<T> = this.appendLeft(x)
-
-//fun main(args: Array<String>) {
-//  val l = List(1, 2, 3, 4, 5, 6, 7, 8, 9)
-//  val d = l
-//    .tail()
-//    .drop(2)
-//    .setHead(6)
-//    .dropWhile { it > 5 }
-//    .append(List(2, 3, 4))
-//    .init()
-//    .reverse()
-//    .map { it - 1 }
-//
-//  println(d + 11)
-//}
