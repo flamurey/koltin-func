@@ -20,7 +20,7 @@ class OptionTest extends Specification {
         expect:
         option(2).filter { it > 1 } == option(2)
         option(1).filter { it > 1 } == none()
-        none().map { it > 1 } == none()
+        none().filter { it > 1 } == none()
     }
 
     def "getOrElse"() {
