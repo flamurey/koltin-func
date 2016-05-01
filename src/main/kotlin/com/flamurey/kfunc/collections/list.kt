@@ -1,5 +1,7 @@
 package com.flamurey.kfunc.collections
 
+import com.flamurey.kfunc.core.Monoid
+
 sealed class List<out T> {
   var hashCode: Int = 0
 
@@ -135,3 +137,5 @@ fun <T> List<T>.appendRight(l: List<T>): List<T> =
 fun <T> List<T>.appendLeft(x: T): List<T> = List.Cons(x, this)
 
 operator fun <T> List<T>.plus(x: T): List<T> = this.appendLeft(x)
+
+fun <T> List<T>.concatenate(m: Monoid<T>) = foldLeft(m.zero()) { acc, x -> m.op(acc, x)}

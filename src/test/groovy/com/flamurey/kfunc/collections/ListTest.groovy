@@ -1,9 +1,9 @@
 package com.flamurey.kfunc.collections
 
+import com.flamurey.kfunc.core.Monoid
 import spock.lang.Specification
 
 class ListTest extends Specification {
-    static listUtil = List["Companion"] as List.Companion
 
     def "Drop"() {
         expect:
@@ -75,11 +75,16 @@ class ListTest extends Specification {
         reversedList(2, 3) == list(2, 3).reverse()
     }
 
+    def "concatenate string by monoid"() {
+        expect:
+        list("1", "2", "3").concatenate(Monoid.@Factory.stringMonoid) == "123"
+    }
+
     static <T> List<T> list(T... data) {
-        return listUtil.invoke(data)
+        return List.@Companion.invoke(data)
     }
 
     static <T> List<T> reversedList(T... data) {
-        return listUtil.reverse(data)
+        return List.@Companion.reverse(data)
     }
 }
