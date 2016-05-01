@@ -1,7 +1,5 @@
 package com.flamurey.kfunc.core
 
-import java.util.*
-
 interface Monoid<A> {
   fun op(l: A, r: A): A
   fun zero(): A
@@ -32,14 +30,20 @@ interface Monoid<A> {
       override fun zero() = true
     }
 
-    fun <T> getOptionMonoid(m: Monoid<T>) = object : Monoid<Optional<T>> {
-      override fun zero() = Optional.of(m.zero())
+    fun <T> getOptionMonoid(m: Monoid<T>) = object : Monoid<Option<T>> {
+      override fun zero() = Option(m.zero())
 
-      override fun op(l: Optional<T>, r: Optional<T>): Optional<T> {
-        val lValue = if (l.isPresent) l.get() else m.zero()
-        val rValue = if (r.isPresent) r.get() else m.zero()
-        return Optional.of(m.op(lValue, rValue))
+      override fun op(l: Option<T>, r: Option<T>): Option<T> {
+        val lValue = l.getOrElse(m.zero())
+        val rValue = r.getOrElse(m.zero())
+        return Option(m.op(lValue, rValue))
       }
+    }
+
+    fun <A, B> getProductMonoid(a: Monoid<A>, b: Monoid<B>) = object : Monoid<Pair<A, B>> {
+      override fun zero(): Pair<A, B> = a.zero() to b.zero()
+
+      override fun op(l: Pair<A, B>, r: Pair<A, B>) = a.op(l.first, r.first) to b.op(l.second, r.second)
     }
   }
 }

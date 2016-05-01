@@ -1,10 +1,10 @@
 package com.flamurey.kfunc.core
 
-class OptionalTest extends MonoidTest<Optional<Integer>> {
+class OptionMonoidTest extends MonoidTest<Option<Integer>> {
     def setupSpec() {
-        x = Optional.of(10)
-        y = Optional.of(11)
-        z = Optional.empty()
+        x = Option.@Companion.invoke(10)
+        y = Option.@Companion.invoke(11)
+        z = Option.@Companion.invoke()
 
         def factory = Monoid.@Factory
         monoids = [factory.getOptionMonoid(factory.intAddition),
