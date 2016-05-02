@@ -1,6 +1,6 @@
 package com.flamurey.kfunc.core
 
-sealed class Option<out A> : Monada<A> {
+sealed class Option<out A> : Monad<A> {
 
   internal object None : Option<Nothing>() {
     override fun get(): Nothing {
@@ -9,7 +9,7 @@ sealed class Option<out A> : Monada<A> {
 
     override fun isPresent(): Boolean = false
 
-    override fun <B> flatMap(f: (Nothing) -> Monada<B>): Monada<B>  = None
+    override fun <B> flatMap(f: (Nothing) -> Monad<B>): Monad<B>  = None
 
     override fun <B> map(f: (Nothing) -> B) = None
 
@@ -31,7 +31,7 @@ sealed class Option<out A> : Monada<A> {
 
     override fun <B> map(f: (A) -> B): Option<B> = Some(f(get))
 
-    override fun <B> flatMap(f: (A) -> Monada<B>): Option<B> {
+    override fun <B> flatMap(f: (A) -> Monad<B>): Option<B> {
       val m = f(get)
       return when (m) {
         is Option<B> -> m

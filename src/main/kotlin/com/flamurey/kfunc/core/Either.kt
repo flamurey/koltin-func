@@ -1,6 +1,6 @@
 package com.flamurey.kfunc.core
 
-sealed class Either<out A, out B> : Monada<B> {
+sealed class Either<out A, out B> : Monad<B> {
   class Left<out A>(val value: A) : Either<A, Nothing>() {
     override fun get(): Nothing {
       throw UnsupportedOperationException()
@@ -10,7 +10,7 @@ sealed class Either<out A, out B> : Monada<B> {
 
     override fun <B> map(f: (Nothing) -> B): Either<A, B> = this
 
-    override fun <B> flatMap(f: (Nothing) -> Monada<B>): Either<A, B> = this
+    override fun <B> flatMap(f: (Nothing) -> Monad<B>): Either<A, B> = this
   }
 
   class Right<out B>(val value: B) : Either<Nothing, B>() {
@@ -20,7 +20,7 @@ sealed class Either<out A, out B> : Monada<B> {
 
     override fun <C> map(f: (B) -> C): Either<Nothing, C> = Right(f(value))
 
-    override fun <C> flatMap(f: (B) -> Monada<C>): Either<Monada<C>, C> {
+    override fun <C> flatMap(f: (B) -> Monad<C>): Either<Monad<C>, C> {
       val m = f(value)
       return when (m) {
         is Right<C> -> m
@@ -77,8 +77,8 @@ fun <A> tryDo(f: () -> A): Either<Exception, A> =
     Either.Left(e)
   }
 
-fun <A, B> Either<Monada<A>, Monada<B>>.codistribute(): Monada<Either<A, B>> =
+fun <A, B> Either<Monad<A>, Monad<B>>.codistribute(): Monad<Either<A, B>> =
   when (this) {
-    is Either.Left<Monada<A>> -> value.map { Either.Left(it) }
-    is Either.Right<Monada<B>> -> value.map { Either.Right(it) }
+    is Either.Left<Monad<A>> -> value.map { Either.Left(it) }
+    is Either.Right<Monad<B>> -> value.map { Either.Right(it) }
   }
